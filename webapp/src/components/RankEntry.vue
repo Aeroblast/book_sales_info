@@ -48,7 +48,7 @@ export default {
       }
     },
     MarkDown(raw) {
-      return raw.replace(/\[(.*?)\]\((.*?)\)/, "<a href='$2'>$1</a>");
+      return raw.replace(/\[(.*?)\]\((.*?)\)/g, "<a href='$2'>$1</a>");
     },
   },
   computed: {},
