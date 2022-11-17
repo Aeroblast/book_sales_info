@@ -1,5 +1,5 @@
 <template>
-  <SalesRank />
+  <SalesRank data_root="https://aeroblast.github.io/book_sales_info_data/" />
 </template>
 
 <script>

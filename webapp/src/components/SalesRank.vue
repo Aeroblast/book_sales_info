@@ -16,11 +16,14 @@ export default {
   name: "SalesRank",
   data() {
     return {
-      data_root: "/book_sales_info_data/",
       entries: [],
       history: [],
       sort_method: "date",
     };
+  },
+  props: {
+    data_root: String,
+    entry: Object,
   },
   components: {
     RankEntry,
