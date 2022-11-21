@@ -87,7 +87,7 @@ export default {
 }
 
 .title {
-  width: 14em;
+  width: 18em;
   max-height: 100%;
   overflow: hidden;
   cursor: pointer;
@@ -108,7 +108,7 @@ export default {
 }
 
 .detail>p {
-  width: 20em;
+  width: 24em;
   margin: 0;
   line-height: 1.5;
   text-indent: -5em;
