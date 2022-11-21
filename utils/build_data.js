@@ -1,6 +1,8 @@
 const fs = require('fs')
 
-const dara_dir = "webapp/public/book_sales_info_data/"
+
+const args = process.argv.splice(2);
+const dara_dir = args[0];
 
 const filterLatestObject =
     ({ title, salesValue, recordDate, salesDesc, sourceDesc, isbn }) =>
@@ -28,9 +30,9 @@ const filterHistoryObject = ({ title, isbn, salesValue, oldData }) => {
                     const known = [
                         "しあわせ食堂の異世界ご飯"
                     ]
-                    if (!known.includes(title)){
+                    if (!known.includes(title)) {
 
-                        throw "First old sales record should be latest." +`${title}|Old ${v}|Latest ${salesValue}`
+                        throw "First old sales record should be latest." + `${title}|Old ${v}|Latest ${salesValue}`
                     }
                 }
                 r.salesRecords.push({
