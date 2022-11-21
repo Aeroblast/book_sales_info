@@ -1,18 +1,14 @@
 <template>
   <div class="entry" :data-detail="detail">
-    <span class="salesValue">{{ AsianNumber(entry.salesValue) }}部</span
-    >&nbsp;&nbsp;
-    <span class="title" @click="detail = !detail">{{ entry.title }} </span
-    >&nbsp;&nbsp;
+    <span class="salesValue">{{ AsianNumber(entry.salesValue) }}部</span>&nbsp;&nbsp;
+    <span class="title" @click="detail = !detail" v-html="titleDisplayHTML"></span>&nbsp;&nbsp;
     <span class="date">{{ entry.recordDate }}</span>
   </div>
   <div class="detail" :data-detail="detail">
+    <p v-if="isLongTitle">タイトル：{{ entry.title }}</p>
     <p>部数詳細：{{ entry.salesDesc }}</p>
-    <p>情報元：<span ref="desc" v-html="MarkDown(entry.sourceDesc)"></span></p>
-    <p>
-      <a target="_blank" :href="'https://www.amazon.co.jp/dp/' + entry.isbn"
-        >Amazon</a
-      >
+    <p>&#x3000;情報元：<span ref="desc" v-html="MarkDown(entry.sourceDesc)"></span></p>
+    <p>&#x3000;&#x3000;紹介：<a target="_blank" :href="'https://www.amazon.co.jp/dp/' + entry.isbn">Amazon</a>
     </p>
   </div>
 </template>
@@ -31,7 +27,7 @@ export default {
   mounted() {
     let as = this.$refs["desc"].getElementsByTagName("a");
     [].forEach.call(as, (a) => {
-      a.target = "_blank";
+      a.target = "_blank"; // for old data using html tags
     });
   },
   methods: {
@@ -51,55 +47,92 @@ export default {
       return raw.replace(/\[(.*?)\]\((.*?)\)/g, "<a href='$2'>$1</a>");
     },
   },
-  computed: {},
+  computed: {
+    isLongTitle() {
+      return this.entry.title.length > 17;
+    },
+    titleDisplayHTML() {
+      return this.isLongTitle ?
+        (this.entry.title.substring(0, 17) + '<span class="expander">…</span>')
+        : this.entry.title;
+    }
+  },
 };
 </script>
 
-<style scoped>
+<style>
 .entry {
   border-top: solid 1px gray;
   padding: 0.3em;
   width: fit-content;
+  /* 4.5em + 14em/10em + 6em */
   height: 2.5em;
 }
+
 .entry:before {
   content: "";
   display: inline-block;
   vertical-align: middle;
   height: 100%;
 }
-.entry > span {
+
+.entry>span {
   display: inline-block;
   vertical-align: middle;
 }
+
 .salesValue {
-  width: 5em;
+  width: 4.5em;
   text-align: right;
 }
+
 .title {
-  width: 25em;
+  width: 14em;
   max-height: 100%;
   overflow: hidden;
   cursor: pointer;
+  line-height: 1.2;
 }
+
 .date {
   width: 6em;
 }
 
 .detail {
-  display: none;
   width: fit-content;
-  margin-left: 6em;
+  height: fit-content;
+  margin-left: 1em;
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 0.5s;
 }
-.detail > p {
-  width: 30em;
+
+.detail>p {
+  width: 20em;
   margin: 0;
   line-height: 1.5;
+  text-indent: -5em;
+  padding-left: 5em;
 }
+
 .detail[data-detail="true"] {
-  display: block;
+  transition: max-height 0.5s;
+  max-height: 15em;
+  border-top: 1px dashed gray;
 }
-.entry[data-detail="true"]  {
-  height: fit-content;
+
+.expander {
+  color: rgb(136, 116, 255);
+}
+
+@media (max-width: 600px) {
+
+  .title {
+    width: 9em;
+  }
+
+  .detail>p {
+    width: 15em;
+  }
 }
 </style>
