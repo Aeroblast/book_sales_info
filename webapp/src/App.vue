@@ -18,7 +18,9 @@ export default {
   margin: auto;
   width: fit-content;
 }
-body{
+
+html,
+body {
   overflow-x: hidden;
 }
 </style>
