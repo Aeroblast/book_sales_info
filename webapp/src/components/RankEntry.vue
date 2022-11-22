@@ -143,6 +143,7 @@ export default {
 .salesValue {
   width: 4.5em;
   text-align: right;
+  white-space: nowrap;
 }
 
 .title {
