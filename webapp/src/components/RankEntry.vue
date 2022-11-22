@@ -19,9 +19,7 @@
   <div class="detail" :data-detail="detail">
     <p v-if="isLongTitle">タイトル：{{ entry.title }}</p>
     <p>部数詳細：{{ entry.salesDesc }}</p>
-    <p>&#x3000;情報元：
-      <MarkDown :raw="entry.sourceDesc" />
-    </p>
+    <p>&#x3000;情報元：<MarkDown :raw="entry.sourceDesc" /></p><!--Do not auto format!-->
     <p>&#x3000;&#x3000;紹介：<a target="_blank" :href="'https://www.amazon.co.jp/dp/' + entry.isbn">Amazon</a>
     </p>
   </div>
