@@ -6,7 +6,8 @@
       部数詳細：<input type="text" v-model="editor_salesDesc" /><span>{{ SearchAsianNumber(editor_salesDesc) }}</span><br>
       &#x3000;&#x3000;日付：<input type="date" v-model="editor_date" /><br>
       情報元(MarkDown)：<br><textarea v-model="editor_sourceDesc">[]()</textarea><br>
-      情報元(Preview)：<br><span v-html="MarkDown(editor_sourceDesc)"></span><br>
+      情報元(Preview)：<br>
+      <MarkDown :raw="editor_sourceDesc" /><br>
       <button @click="TryCopy">Copy</button><span v-html="copy_result"></span>
     </div>
   </div>
@@ -18,17 +19,23 @@
   <div class="detail" :data-detail="detail">
     <p v-if="isLongTitle">タイトル：{{ entry.title }}</p>
     <p>部数詳細：{{ entry.salesDesc }}</p>
-    <p>&#x3000;情報元：<span ref="desc" v-html="MarkDown(entry.sourceDesc)"></span></p>
+    <p>&#x3000;情報元：
+      <MarkDown :raw="entry.sourceDesc" />
+    </p>
     <p>&#x3000;&#x3000;紹介：<a target="_blank" :href="'https://www.amazon.co.jp/dp/' + entry.isbn">Amazon</a>
     </p>
   </div>
 </template>
 
 <script>
+import MarkDown from './MarkDown.vue';
 export default {
   name: "RankEntry",
   props: {
-    entry: Object,
+    entry: Object
+  },
+  components: {
+    MarkDown,
   },
   data() {
     return {
@@ -41,10 +48,10 @@ export default {
     };
   },
   mounted() {
-    let as = this.$refs["desc"].getElementsByTagName("a");
-    [].forEach.call(as, (a) => {
-      a.target = "_blank"; // for old data using html tags
-    });
+    // let as = this.$refs["desc"].getElementsByTagName("a");
+    // [].forEach.call(as, (a) => {
+    //   a.target = "_blank"; // for old data using html tags
+    // });
   },
   methods: {
     AsianNumber(num) {
@@ -66,9 +73,6 @@ export default {
       if (m[3]) { value += parseInt(m[3]) * 1000; }
       if (m[1]) { value += parseInt(m[1]) * 10000; }
       return value;
-    },
-    MarkDown(raw) {
-      return raw.replace(/\[(.*?)\]\((.*?)\)/g, "<a href='$2'>$1</a>");
     },
     TryCopy() {
       let r = {};
@@ -203,6 +207,7 @@ export default {
 
 .editor_area {
   display: block;
+  width: 0;
   overflow: visible;
 }
 

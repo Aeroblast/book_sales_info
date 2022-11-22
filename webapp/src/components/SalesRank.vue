@@ -11,6 +11,7 @@
 </template>
 
 <script>
+import { data_root } from "../settings";
 import RankEntry from "./RankEntry.vue";
 export default {
   name: "SalesRank",
@@ -22,7 +23,6 @@ export default {
     };
   },
   props: {
-    data_root: String,
     entry: Object,
   },
   components: {
@@ -30,10 +30,10 @@ export default {
   },
   async mounted() {
     let latest_p = fetch(
-      this.data_root + `latest.json?t=${new Date().toISOString()}`
+      data_root + `latest.json?t=${new Date().toISOString()}`
     );
     let histroy_p = fetch(
-      this.data_root + `history.json?t=${new Date().toISOString()}`
+      data_root + `history.json?t=${new Date().toISOString()}`
     );
     let latest_response = await latest_p;
     this.entries = await latest_response.json();
