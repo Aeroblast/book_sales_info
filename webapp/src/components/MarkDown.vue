@@ -8,8 +8,7 @@ export default {
     },
     render() {
         const html = this.Compile(this.raw);
-        const VTree = CreateV(html)
-
+        const VTree = CreateV(html);
         return VTree;
     },
     methods: {
@@ -44,7 +43,13 @@ function CreateV(html) {
         }
         const tag = TagProcess(m[1])
         nodeList.push(tag);
-        pos = m.index;
+        pos = m.index + m[0].length;
+    }
+    {
+        const textNode = html.substring(pos);
+        if (textNode) {
+            nodeList.push(textNode);
+        }
     }
 
     //console.log(vnodes);
@@ -62,16 +67,21 @@ function CreateTree(list, pos, parent) {
         } else {
             switch (tag.info) {
                 case "opening":
-                    tag.value.children = [];
-                    parent.push(tag.value);
-                    pos = CreateTree(list, pos + 1, tag.value.children)
+                    {
+                        let children = [];
+                        pos = CreateTree(list, pos + 1, children);
+                        if (children.length == 1 && typeof (children[0]) === "string") {
+                            children = children[0];
+                        }
+                        parent.push(tag.value(children));
+                    }
                     break;
                 case "void":
-                    parent.push(tag.value);
+                    parent.push(tag.value());
                     pos++;
                     break;
                 case "closing":
-                    return pos;
+                    return pos + 1;
                 default:
                     console.error(tag.value);
                     throw tag.info;
@@ -91,7 +101,7 @@ function TagProcess(tagStr) {
         "a": {
             attr: ["href"],
             form: "opening",
-            v(attrs) { attrs.target = "_blank"; return h("a", attrs); }
+            v(attrs, children) { attrs.target = "_blank"; return h("a", attrs, children); }
         },
         "InlineImage": {
             attr: ["title", "src"],
@@ -122,7 +132,7 @@ function TagProcess(tagStr) {
         if (tagStr in allow) {
             let tag = allow[tagStr];
             if (tag.form === form) {
-                return { info: form, value: tag.v({}) }
+                return { info: form, value: () => tag.v({}) }
             } else {
                 return { info: "error", value: `Unsupported:${form} of ${tagStr}` }
             }
@@ -134,7 +144,7 @@ function TagProcess(tagStr) {
         if (tagName in allow) {
             let tag = allow[tagName];
             let attrs = ReadAttrs(tagStr.substring(pos).trim());
-            return { info: form, value: tag.v(attrs) }
+            return { info: form, value: (children) => tag.v(attrs, children) }
 
         } else {
             return { info: "error", value: `UnsupportedTag: ${tagName}` }
@@ -142,7 +152,7 @@ function TagProcess(tagStr) {
     }
 
 }
-const reg_attr = /([a-zA-Z0-9-_])=(["'])(.*?)(["'])/g; // Assert only one type of ' or "
+const reg_attr = /([a-zA-Z0-9-_]+)=(["'])(.*?)(["'])/g; // Assert only one type of ' or "
 
 function ReadAttrs(str) {
     let itr = str.matchAll(reg_attr);
