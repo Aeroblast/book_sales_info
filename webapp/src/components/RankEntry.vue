@@ -6,8 +6,10 @@
       部数詳細：<input type="text" v-model="editor_salesDesc" /><span>{{ SearchAsianNumber(editor_salesDesc) }}</span><br>
       &#x3000;&#x3000;日付：<input type="date" v-model="editor_date" /><br>
       情報元(MarkDown)：<br><textarea v-model="editor_sourceDesc">[]()</textarea><br>
-      情報元(Preview)：<br>
-      <MarkDown :raw="editor_sourceDesc" /><br>
+      情報元(Preview)：
+      <div class="desc_preview">
+        <MarkDown :raw="editor_sourceDesc" />
+      </div>
       <button @click="TryCopy">Copy</button><span v-html="copy_result"></span>
     </div>
   </div>
@@ -19,7 +21,10 @@
   <div class="detail" :data-detail="detail">
     <p v-if="isLongTitle">タイトル：{{ entry.title }}</p>
     <p>部数詳細：{{ entry.salesDesc }}</p>
-    <p>&#x3000;情報元：<MarkDown :raw="entry.sourceDesc" /></p><!--Do not auto format!-->
+    <p>
+      <MarkDown :raw="'&#x3000;情報元：' + entry.sourceDesc" />
+    </p>
+    <!--把冒号前也塞进raw，不然VSCode插件自动格式化会让那里多个空格。-->
     <p>&#x3000;&#x3000;紹介：<a target="_blank" :href="'https://www.amazon.co.jp/dp/' + entry.isbn">Amazon</a>
     </p>
   </div>
@@ -163,7 +168,6 @@ export default {
   overflow: hidden;
   max-height: 0;
   transition: max-height 0.5s;
-  position: relative;
 }
 
 .detail>p {
@@ -207,6 +211,11 @@ export default {
   display: block;
   width: 0;
   overflow: visible;
+  white-space: nowrap;
+}
+
+.editor_area>* {
+  white-space: initial;
 }
 
 .editor_area>input[type="text"] {
@@ -225,8 +234,12 @@ export default {
   display: none;
 }
 
-@media (max-width: 600px) {
+.desc_preview {
+  width: 15em;
+}
 
+
+@media (max-width: 600px) {
   .title {
     width: 9em;
   }

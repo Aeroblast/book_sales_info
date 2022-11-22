@@ -18,4 +18,7 @@ export default {
   margin: auto;
   width: fit-content;
 }
+body{
+  overflow-x: hidden;
+}
 </style>
