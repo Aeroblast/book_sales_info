@@ -51,10 +51,6 @@ export default {
     };
   },
   mounted() {
-    // let as = this.$refs["desc"].getElementsByTagName("a");
-    // [].forEach.call(as, (a) => {
-    //   a.target = "_blank"; // for old data using html tags
-    // });
   },
   methods: {
     AsianNumber(num) {
@@ -168,6 +164,8 @@ export default {
   overflow: hidden;
   max-height: 0;
   transition: max-height 0.5s;
+  border-top: 0px dashed gray;
+  transition: max-height 0.5s, border-width 0.5s;
 }
 
 .detail>p {
@@ -179,7 +177,7 @@ export default {
 }
 
 .detail[data-detail="true"] {
-  transition: max-height 0.5s;
+  transition: max-height 0.5s, border-width 0.5s;
   max-height: 15em;
   border-top: 1px dashed gray;
 }
