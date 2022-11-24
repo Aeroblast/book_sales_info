@@ -2,7 +2,7 @@ const fs = require('fs')
 
 
 const args = process.argv.splice(2);
-const dara_dir = args[0];
+const data_dir = args[0];
 
 const filterLatestObject =
     ({ title, salesValue, recordDate, salesDesc, sourceDesc, isbn }) =>
@@ -76,13 +76,13 @@ function GetSalesValue(desc) {
 
 // Main
 
-const baseData = JSON.parse(fs.readFileSync(dara_dir + "base/base.json"));
-const patchFiles = fs.readdirSync(dara_dir + "base/").filter(f => f.match(/20[0-9]{2}.json/))
+const baseData = JSON.parse(fs.readFileSync(data_dir + "base/base.json"));
+const patchFiles = fs.readdirSync(data_dir + "base/").filter(f => f.match(/20[0-9]{2}.json/))
 var latestData = baseData.map(filterLatestObject);
 var historyData = baseData.map(filterHistoryObject);
 
 patchFiles.forEach(file => {
-    const data = JSON.parse(fs.readFileSync(dara_dir + "base/" + file));
+    const data = JSON.parse(fs.readFileSync(data_dir + "base/" + file));
     data.forEach(item => {
         const latestRef = latestData.find(x => x.isbn == item.isbn);
         if (latestRef) {
@@ -107,8 +107,8 @@ patchFiles.forEach(file => {
 
 
 
-fs.writeFileSync(dara_dir + "latest.json", JSON.stringify(latestData, null, 2));
-fs.writeFileSync(dara_dir + "history.json", JSON.stringify(historyData, null, 2));
+fs.writeFileSync(data_dir + "latest.json", JSON.stringify(latestData, null, 2));
+fs.writeFileSync(data_dir + "history.json", JSON.stringify(historyData, null, 2));
 
 
 
