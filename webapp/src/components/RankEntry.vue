@@ -5,7 +5,7 @@
     <div class="editor_area" :data-editor="editor">
       部数詳細：<input type="text" v-model="editor_salesDesc" /><span>{{ SearchAsianNumber(editor_salesDesc) }}</span><br>
       &#x3000;&#x3000;日付：<input type="date" v-model="editor_date" /><br>
-      情報元(MarkDown)：<br><textarea v-model="editor_sourceDesc">[]()</textarea><br>
+      情報元(MarkDown)：<br><textarea v-model="editor_sourceDesc">![Image Desc](Image URL) [Link Text](Link URL)</textarea><br>
       情報元(Preview)：
       <div class="desc_preview">
         <MarkDown :raw="editor_sourceDesc" />
