@@ -1,11 +1,9 @@
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-core');
 const fs = require('fs')
 
 var configLoaded = false;
-var executablePath = "";
+var executablePath = "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe";
 var proxyServer = "";
-var dataDir = "data";
-var fsmode = "";
 
 var configs = {};
 
@@ -13,8 +11,9 @@ const normalNames = ["github-token"];
 
 function ReadConfig() {
     if (configLoaded) return;
-    const config = fs.readFileSync('config.txt', 'utf8');
-    if (config) {
+    try {
+        const config = fs.readFileSync('config.txt', 'utf8');
+
         config.split('\n').forEach(line => {
             let c = line.split('\t')
             if (c.length != 2) return;
@@ -25,10 +24,6 @@ function ReadConfig() {
                 case "proxy-server":
                     proxyServer = c[1].trim();
                     break;
-                case "data-dir":
-                    dataDir = c[1].trim(); break;
-                case "fsmode":
-                    fsmode = c[1].trim(); break;
                 default:
                     if (normalNames.includes(c[0])) {
                         configs[c[0]] = c[1].trim();
@@ -36,7 +31,11 @@ function ReadConfig() {
                     break;
             }
         })
+
+    } catch {
+
     }
+
     configLoaded = true;
 }
 
@@ -49,25 +48,15 @@ async function CreateBrowser() {
     let obj = {
         executablePath: executablePath,
         args: [
-            //proxyServer ? `--proxy-server=${proxyServer}` : "",
+            proxyServer ? `--proxy-server=${proxyServer}` : "",
             '--lang=ja-JP']
     };
 
-    // obj.headless = false;// Debug用
+    obj.headless = false;// Debug用
 
     const browser = await puppeteer.launch(obj);
 
     return browser;
-}
-
-function getDataDir() {
-    ReadConfig();
-    return dataDir;
-}
-
-function getFsMode() {
-    ReadConfig();
-    return fsmode;
 }
 
 function getConfigValue(name) {
@@ -75,6 +64,4 @@ function getConfigValue(name) {
     return configs[name];
 }
 exports.CreateBrowser = CreateBrowser;
-exports.getDataDir = getDataDir;
-exports.getFsMode = getFsMode;
 exports.getConfigValue = getConfigValue;
