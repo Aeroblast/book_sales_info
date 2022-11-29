@@ -51,7 +51,7 @@ div[data-large="true"] {
     overflow: visible;
 }
 
-div>img {
+div[data-large]>img {
     position: fixed;
     left: 0;
     right: 0;
